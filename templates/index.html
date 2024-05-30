@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Uber Price Prediction APP</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        form {
+            display: inline-block;
+            text-align: left;
+            margin-top: 20px;
+        }
+        label, input, button {
+            display: block;
+            margin: 10px 0;
+        }
+        button[type="submit"] {
+            background-color: blue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button[type="submit"]:hover {
+            background-color: darkblue;
+        }
+        .credit {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Uber Price Prediction</h1>
+    <form id="uberForm" method="POST">
+        <label for="start_lat">Start Latitude:</label>
+        <input type="number" step="0.0001" id="start_lat" name="start_lat" required>
+        <label for="start_lon">Start Longitude:</label>
+        <input type="number" step="0.0001" id="start_lon" name="start_lon" required>
+        <label for="distance">Distance (in kilometers):</label>
+        <input type="number" step="0.01" id="distance" name="distance" required>
+        <button type="submit">Predict Price</button>
+    </form>
+    <div class="credit">
+        <p>Author and credit @ Huiping Li</p>
+    </div>
+
+    <script>
+        document.getElementById('uberForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const startLat = document.getElementById('start_lat').value;
+            const startLon = document.getElementById('start_lon').value;
+            const distance = document.getElementById('distance').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    start_lat: startLat,
+                    start_lon: startLon,
+                    distance: distance
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(`Error: ${data.error}`);
+                } else {
+                    alert(`Predicted Price: ${data.prediction}`);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
+
